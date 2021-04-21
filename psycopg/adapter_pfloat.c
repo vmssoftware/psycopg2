@@ -33,6 +33,15 @@
 #include <floatobject.h>
 #include <math.h>
 
+#ifdef __VMS
+#include <fp.h>
+#undef isnan
+#undef isinf
+#undef isfinite
+#define isnan(x) (fp_classify(x) == FP_NAN)
+#define isinf(x) (fp_classify(x) == FP_INFINITE)
+#define isfinite(x) (!(fp_classify(x) == FP_INFINITE || fp_classify(x) == FP_NAN))
+#endif
 
 /** the Float object **/
 

@@ -290,6 +290,16 @@ class psycopg_build_ext(build_ext):
 
             self.compiler._compile = _compile
 
+        get_cc_args_orig = getattr(self.compiler, '_get_cc_args', None)
+        if get_cc_args_orig is not None:
+            def _get_cc_args(*args, **kwargs):
+                rv = get_cc_args_orig(*args, **kwargs)
+                if args[1]: # debug
+                    rv += ['/LIST', '/SHOW=ALL', '/WARN=DISABLE=(QUESTCOMPARE,QUESTCOMPARE1)']
+                return rv
+
+            self.compiler._get_cc_args = _get_cc_args
+
         try:
             build_ext.build_extension(self, extension)
             psycopg_build_ext.built_files += 1
@@ -397,6 +407,37 @@ For further information please check the 'doc/src/install.rst' file (also at
 
         build_ext.finalize_options(self)
 
+        if sys.platform == 'OpenVMS':
+            self.include_dirs.append('libpq$root:[include]')
+            if not os.getenv('libpq$root'):
+                sys.stderr.write("""
+Error: libpq is not found.
+Try to execute @SYS$STARTUP:LIBPQ$STARTUP.COM before.
+""")
+                sys.exit(1)
+            self.libraries.append('libpq$root:[lib]libpq.olb')
+
+            if os.getenv('ssl1$root'):
+                self.libraries.append('ssl1$root:[lib]ssl1$libssl32.olb')
+                self.libraries.append('ssl1$root:[lib]ssl1$libcrypto32.olb')
+            else:
+                sys.stderr.write("""
+Error: SSL1 is required.
+""")
+                sys.exit(1)
+            # add double quotes
+            for i, t in enumerate(define_macros):
+                if t[0] == 'PSYCOPG_VERSION':
+                    if ' ' in t[1]:
+                        define_macros[i] = (
+                            t[0], '"' + t[1] + '"')
+            define_macros.append(('_OSF_SOURCE', None))
+            define_macros.append(('_USE_STD_STAT', None))
+            define_macros.append(('PG_VERSION_NUM', '110000'))
+            # define directories for compiler
+            os.popen('define/job libpq libpq$root:[include.libpq]').read()
+            return
+
         pg_config_helper = PostgresConfig(self)
 
         self.include_dirs.append(".")
@@ -482,7 +523,7 @@ data_files = []
 sources = [
     'psycopgmodule.c',
     'green.c', 'pqpath.c', 'utils.c', 'bytes_format.c',
-    'libpq_support.c', 'win32_support.c', 'solaris_support.c', 'aix_support.c',
+    'libpq_support.c', 'win32_support.c', 'solaris_support.c', 'aix_support.c', 'openvms_support.c',
 
     'connection_int.c', 'connection_type.c',
     'cursor_int.c', 'cursor_type.c', 'column_type.c',
@@ -508,7 +549,9 @@ depends = [
     'replication_cursor.h',
     'replication_message.h',
     'notify.h', 'pqpath.h', 'xid.h', 'column.h', 'conninfo.h',
-    'libpq_support.h', 'win32_support.h', 'utils.h',
+    'libpq_support.h', 'win32_support.h', 
+    'solaris_support.h', 'aix_support.h', 'openvms_support.h',
+    'utils.h',
 
     'adapter_asis.h', 'adapter_binary.h', 'adapter_datetime.h',
     'adapter_list.h', 'adapter_pboolean.h', 'adapter_pdecimal.h',
@@ -615,3 +658,7 @@ setup(name="psycopg2",
           'Issue Tracker': 'https://github.com/psycopg/psycopg2/issues',
           'Download': 'https://pypi.org/project/psycopg2/',
       })
+
+if sys.platform == 'OpenVMS':
+    # deassign directories
+    os.popen('deassign/job libpq').read()

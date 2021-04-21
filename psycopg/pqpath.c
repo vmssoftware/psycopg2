@@ -56,6 +56,8 @@
 #include "solaris_support.h"
 #elif defined(_AIX)
 #include "aix_support.h"
+#elif defined(__VMS)
+#include "openvms_support.h"
 #else
 #include <sys/time.h>
 #endif

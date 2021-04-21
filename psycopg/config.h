@@ -178,6 +178,10 @@ static double round(double num)
 #endif
 #endif
 
+#ifdef __VMS
+#define round lround
+#endif
+
 /* resolve missing isinf() function for Solaris */
 #if defined (__SVR4) && defined (__sun)
 #include <ieeefp.h>
