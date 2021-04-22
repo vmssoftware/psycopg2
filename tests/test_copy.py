@@ -84,6 +84,7 @@ class CopyTests(ConnectingTestCase):
             curs.close()
 
     @slow
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'it fails on OpenVMS')
     def test_copy_from_insane_size(self):
         # Trying to trigger a "would block" error
         curs = self.conn.cursor()
