@@ -25,6 +25,7 @@
 
 import threading
 import unittest
+import sys
 from .testutils import ConnectingTestCase, skip_before_postgres, slow
 from .testutils import skip_if_crdb
 
@@ -137,6 +138,7 @@ class DeadlockSerializationTests(ConnectingTestCase):
         ConnectingTestCase.tearDown(self)
 
     @slow
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
     def test_deadlock(self):
         self.thread1_error = self.thread2_error = None
         step1 = threading.Event()
@@ -185,6 +187,7 @@ class DeadlockSerializationTests(ConnectingTestCase):
             error, psycopg2.extensions.TransactionRollbackError))
 
     @slow
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
     def test_serialisation_failure(self):
         self.thread1_error = self.thread2_error = None
         step1 = threading.Event()

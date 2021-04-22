@@ -24,6 +24,7 @@
 # License for more details.
 
 import unittest
+import sys
 from .testutils import ConnectingTestCase, slow, reload
 
 from threading import Thread
@@ -32,6 +33,7 @@ from psycopg2 import errorcodes
 
 class ErrocodeTests(ConnectingTestCase):
     @slow
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
     def test_lookup_threadsafe(self):
 
         # Increase if it does not fail with KeyError

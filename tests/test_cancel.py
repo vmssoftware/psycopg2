@@ -26,6 +26,7 @@
 
 import time
 import threading
+import sys
 
 import psycopg2
 import psycopg2.extensions
@@ -56,6 +57,7 @@ class CancelTests(ConnectingTestCase):
 
     @slow
     @skip_before_postgres(8, 2)
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
     def test_cancel(self):
         errors = []
 

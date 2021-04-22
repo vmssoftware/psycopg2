@@ -2,11 +2,18 @@
 
 import os
 
-dbname = os.environ.get('PSYCOPG2_TESTDB', 'psycopg2_test')
-dbhost = os.environ.get('PSYCOPG2_TESTDB_HOST', os.environ.get('PGHOST'))
-dbport = os.environ.get('PSYCOPG2_TESTDB_PORT', os.environ.get('PGPORT'))
-dbuser = os.environ.get('PSYCOPG2_TESTDB_USER', os.environ.get('PGUSER'))
-dbpass = os.environ.get('PSYCOPG2_TESTDB_PASSWORD', os.environ.get('PGPASSWORD'))
+if os.sys.platform == 'OpenVMS':
+    dbname = os.getenv('PSYCOPG2_TESTDB', 'psycopg2_test')
+    dbhost = os.getenv('PSYCOPG2_TESTDB_HOST', os.getenv('PGHOST'))
+    dbport = os.getenv('PSYCOPG2_TESTDB_PORT', os.getenv('PGPORT'))
+    dbuser = os.getenv('PSYCOPG2_TESTDB_USER', os.getenv('PGUSER'))
+    dbpass = os.getenv('PSYCOPG2_TESTDB_PASSWORD', os.getenv('PGPASSWORD'))
+else:
+    dbname = os.environ.get('PSYCOPG2_TESTDB', 'psycopg2_test')
+    dbhost = os.environ.get('PSYCOPG2_TESTDB_HOST', os.environ.get('PGHOST'))
+    dbport = os.environ.get('PSYCOPG2_TESTDB_PORT', os.environ.get('PGPORT'))
+    dbuser = os.environ.get('PSYCOPG2_TESTDB_USER', os.environ.get('PGUSER'))
+    dbpass = os.environ.get('PSYCOPG2_TESTDB_PASSWORD', os.environ.get('PGPASSWORD'))
 
 # Check if we want to test psycopg's green path.
 green = os.environ.get('PSYCOPG2_TEST_GREEN', None)

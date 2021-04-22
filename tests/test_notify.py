@@ -86,7 +86,7 @@ conn.close()
         t0 = time.time()
         select.select([self.conn], [], [], 5)
         t1 = time.time()
-        self.assert_(0.99 < t1 - t0 < 4, t1 - t0)
+        self.assert_(0.99 < t1 - t0 < 5, t1 - t0)   # OpenVMS
 
         pid = int(proc.communicate()[0])
         self.assertEqual(0, len(self.conn.notifies))

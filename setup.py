@@ -290,15 +290,16 @@ class psycopg_build_ext(build_ext):
 
             self.compiler._compile = _compile
 
-        get_cc_args_orig = getattr(self.compiler, '_get_cc_args', None)
-        if get_cc_args_orig is not None:
-            def _get_cc_args(*args, **kwargs):
-                rv = get_cc_args_orig(*args, **kwargs)
-                if args[1]: # debug
-                    rv += ['/LIST', '/SHOW=ALL', '/WARN=DISABLE=(QUESTCOMPARE,QUESTCOMPARE1)']
-                return rv
+        if self.get_compiler_name() == 'openvms':
+            get_cc_args_orig = getattr(self.compiler, '_get_cc_args', None)
+            if get_cc_args_orig is not None:
+                def _get_cc_args(*args, **kwargs):
+                    rv = get_cc_args_orig(*args, **kwargs)
+                    if args[1]: # debug
+                        rv += ['/LIST', '/SHOW=ALL', '/WARN=DISABLE=(QUESTCOMPARE,QUESTCOMPARE1)']
+                    return rv
 
-            self.compiler._get_cc_args = _get_cc_args
+                self.compiler._get_cc_args = _get_cc_args
 
         try:
             build_ext.build_extension(self, extension)
@@ -434,6 +435,7 @@ Error: SSL1 is required.
             define_macros.append(('_OSF_SOURCE', None))
             define_macros.append(('_USE_STD_STAT', None))
             define_macros.append(('PG_VERSION_NUM', '110000'))
+            define_macros.append(('PSYCOPG_DEBUG', None))
             # define directories for compiler
             os.popen('define/job libpq libpq$root:[include.libpq]').read()
             return

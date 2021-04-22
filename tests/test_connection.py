@@ -220,6 +220,7 @@ class ConnectionTests(ConnectingTestCase):
 
     @slow
     @skip_before_postgres(8, 2)
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
     def test_concurrent_execution(self):
         def slave():
             cnn = self.connect()
@@ -357,6 +358,7 @@ class ConnectionTests(ConnectingTestCase):
         # we can't do anything else in Python
         self.assertIsNotNone(capsule)
 
+    @unittest.skipIf(sys.platform == 'OpenVMS', "statically linked")
     def test_pgconn_ptr(self):
         conn = self.connect()
         self.assert_(conn.pgconn_ptr is not None)
@@ -379,6 +381,7 @@ class ConnectionTests(ConnectingTestCase):
         self.assert_(conn.pgconn_ptr is None)
 
     @slow
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
     def test_multiprocess_close(self):
         dir = tempfile.mkdtemp()
         try:

@@ -382,6 +382,7 @@ class CursorTests(ConnectingTestCase):
         self.assertEqual(cur.rowcount, 5)
 
     @skip_before_postgres(9)
+    @unittest.skipIf(sys.platform == 'OpenVMS', "statically linked")
     def test_pgresult_ptr(self):
         curs = self.conn.cursor()
         self.assert_(curs.pgresult_ptr is None)

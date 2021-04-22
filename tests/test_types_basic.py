@@ -491,6 +491,9 @@ class AdaptSubclassTest(unittest.TestCase):
 @unittest.skipIf(
     platform.system() == 'Windows',
     "Not testing because we are useless with ctypes on Windows")
+@unittest.skipIf(
+    platform.system() == 'OpenVMS',
+    "Not testing because we are useless with ctypes on OpenVMS")
 class ByteaParserTest(unittest.TestCase):
     """Unit test for our bytea format parser."""
     def setUp(self):
