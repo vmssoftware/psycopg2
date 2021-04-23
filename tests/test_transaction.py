@@ -138,7 +138,7 @@ class DeadlockSerializationTests(ConnectingTestCase):
         ConnectingTestCase.tearDown(self)
 
     @slow
-    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads are not allowed')
     def test_deadlock(self):
         self.thread1_error = self.thread2_error = None
         step1 = threading.Event()
@@ -187,7 +187,7 @@ class DeadlockSerializationTests(ConnectingTestCase):
             error, psycopg2.extensions.TransactionRollbackError))
 
     @slow
-    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads are not allowed')
     def test_serialisation_failure(self):
         self.thread1_error = self.thread2_error = None
         step1 = threading.Event()

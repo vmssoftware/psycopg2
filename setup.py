@@ -410,6 +410,7 @@ For further information please check the 'doc/src/install.rst' file (also at
 
         if sys.platform == 'OpenVMS':
             self.include_dirs.append('libpq$root:[include]')
+            self.libraries.append('sys$library:pthread$rtl.exe')
             if not os.getenv('libpq$root'):
                 sys.stderr.write("""
 Error: libpq is not found.

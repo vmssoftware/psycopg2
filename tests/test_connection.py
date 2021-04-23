@@ -220,7 +220,7 @@ class ConnectionTests(ConnectingTestCase):
 
     @slow
     @skip_before_postgres(8, 2)
-    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads are not allowed')
     def test_concurrent_execution(self):
         def slave():
             cnn = self.connect()
@@ -381,7 +381,7 @@ class ConnectionTests(ConnectingTestCase):
         self.assert_(conn.pgconn_ptr is None)
 
     @slow
-    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads does not allowed')
+    @unittest.skipIf(sys.platform == 'OpenVMS', 'Treads are not allowed')
     def test_multiprocess_close(self):
         dir = tempfile.mkdtemp()
         try:
@@ -1563,7 +1563,7 @@ class TestEncryptPassword(ConnectingTestCase):
             ext.encrypt_password, 'psycopg2', 'ashesh', self.conn, 'abc')
 
     @skip_before_libpq(10)
-    @unittest.skipIf(sys.platform == 'OpenVMS', 'scram-sha-256 is failed on OpenVMS')
+    # @unittest.skipIf(sys.platform == 'OpenVMS', 'scram-sha-256 is failed on OpenVMS')
     def test_encrypt_scram(self):
         self.assert_(
             ext.encrypt_password(
