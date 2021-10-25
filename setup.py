@@ -417,16 +417,22 @@ Error: libpq is not found.
 Try to execute @SYS$STARTUP:LIBPQ$STARTUP.COM before.
 """)
                 sys.exit(1)
-            self.libraries.append('libpq$root:[lib]libpq.olb')
-
-            if os.getenv('ssl1$root'):
-                self.libraries.append('ssl1$root:[lib]ssl1$libssl32.olb')
-                self.libraries.append('ssl1$root:[lib]ssl1$libcrypto32.olb')
-            else:
+            if not os.getenv('ssl1$root'):
                 sys.stderr.write("""
 Error: SSL1 is required.
 """)
                 sys.exit(1)
+
+            import struct
+            if struct.calcsize('P') == 8:
+                self.libraries.append('libpq$root:[lib]libpq64.olb')
+                self.libraries.append('ssl1$root:[lib]ssl1$libssl64.olb')
+                self.libraries.append('ssl1$root:[lib]ssl1$libcrypto64.olb')
+            else:
+                self.libraries.append('libpq$root:[lib]libpq.olb')
+                self.libraries.append('ssl1$root:[lib]ssl1$libssl32.olb')
+                self.libraries.append('ssl1$root:[lib]ssl1$libcrypto32.olb')
+
             # add double quotes
             for i, t in enumerate(define_macros):
                 if t[0] == 'PSYCOPG_VERSION':
