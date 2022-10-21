@@ -426,8 +426,8 @@ Error: SSL1 is required.
             import struct
             if struct.calcsize('P') == 8:
                 self.libraries.append('libpq$root:[lib]libpq64.olb')
-                self.libraries.append('ssl1$root:[lib]ssl1$libssl64.olb')
-                self.libraries.append('ssl1$root:[lib]ssl1$libcrypto64.olb')
+                self.libraries.append('ssl111$root:[lib]ssl111$libssl.olb')
+                self.libraries.append('ssl111$root:[lib]ssl111$libcrypto.olb')
             else:
                 self.libraries.append('libpq$root:[lib]libpq.olb')
                 self.libraries.append('ssl1$root:[lib]ssl1$libssl32.olb')
